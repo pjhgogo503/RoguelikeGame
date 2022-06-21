@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3752296999821454542}
   - component: {fileID: 3752296999821454543}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: AttackCollider
   m_TagString: AttackCollider
   m_Icon: {fileID: 0}
@@ -158,6 +158,8 @@ MonoBehaviour:
   _lockTarget: {fileID: 0}
   _scanRange: 7
   _attackRange: 1.7
+  distance: 0
+  height: 0
 --- !u!114 &3752296999222125581
 MonoBehaviour:
   m_ObjectHideFlags: 0

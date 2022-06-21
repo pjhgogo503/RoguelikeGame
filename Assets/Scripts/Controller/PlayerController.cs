@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    PlayerStat _stat;
+    PlayerStat playerstat;
 
     public float _jumpPower; //플레이어 점프 파워
 
     private Rigidbody2D rigid; //플레이어  rigid body
     private Animator animator; //플레이어 애니메이션
+    private PossessionController possession; // 플레이어 빙의
 
     private bool isjumping; // 스크립트 내부 점프 상태 제어
+    public bool ispossession; // 스크립트 내부 빙의 상태 제어
     private string animationState = "AnimationState";
 
     //플레이어 상태들
@@ -26,10 +28,12 @@ public class PlayerController : MonoBehaviour
 
     void Init() //플레이어 컴포넌트 연결부분
     {
-        _stat = gameObject.GetComponent<PlayerStat>();
+        _jumpPower = 100;
 
+        playerstat = GetComponent<PlayerStat>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
+        possession = GetComponent<PossessionController>();
     }
 
     void Start()
@@ -73,7 +77,8 @@ public class PlayerController : MonoBehaviour
     // collider에 닿았을때
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.layer);
+        if(ispossession)
+            Debug.Log("OnCollisionEnter2D");
 
         if (collision.gameObject.layer == (int)Define.Layer.Enemy)
             Debug.Log($"{collision.gameObject.name}");
@@ -82,24 +87,34 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log($"Trigger : {collision.gameObject}");
-        if(collision.gameObject.layer == (int)Define.Layer.Enemy)
-            collision.gameObject.GetComponent<Stat>().Hp -= _stat.Attack;
+        if (collision.gameObject.layer == (int)Define.Layer.Enemy)
+            collision.GetComponentInParent<Stat>().Hp -= playerstat.Attack;
+
+        if (playerstat.Hp <= 0)
+        {
+            animator.SetTrigger("isDie");
+            Managers.Input.KeyAction -= OnKeyBoard;
+            Managers.Input.NonKeyAction -= NonKeyBoard;
+            Managers.Input.MouseAction -= OnMouseClicked;
+            return;
+        }
     }
 
     //키보드에 뭔가가 들어왔을 때 실행
     void OnKeyBoard()
     {
+        ispossession = false;
         if (Input.GetKey(KeyCode.A)) // 왼쪽 이동
         {
             animator.SetInteger(animationState, (int)States.Run);
             transform.localScale = new Vector3(-1, 1, 1); //왼쪽 바라보는 방향
-            transform.Translate(Vector3.left * Time.deltaTime * _stat.MoveSpeed);  //방향 * 속도
+            transform.Translate(Vector3.left * Time.deltaTime * playerstat.MoveSpeed);  //방향 * 속도
         }
         if (Input.GetKey(KeyCode.D)) //오른쪽 이동
         {
             animator.SetInteger(animationState, (int)States.Run);
             transform.localScale = new Vector3(1, 1, 1); //오른쪽 바라보는 방향
-            transform.Translate(Vector3.right * Time.deltaTime * _stat.MoveSpeed);
+            transform.Translate(Vector3.right * Time.deltaTime * playerstat.MoveSpeed);
         }
         if (Input.GetKey(KeyCode.Space)) //점프
         {
@@ -112,6 +127,11 @@ public class PlayerController : MonoBehaviour
             }
 
             animator.SetBool("isJumping", true); // 플레이어 점프 상태로 전환
+        }
+        //빙의 테스트
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            ispossession = true;
         }
     }
 
@@ -126,10 +146,32 @@ public class PlayerController : MonoBehaviour
     void OnMouseClicked(Define.MouseEvent mouse)
     {
         // 클릭상태이고 현재 플레이어가 Attack 상태가 아닐 때
-        if(mouse == Define.MouseEvent.Click && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if(mouse == Define.MouseEvent.Click)
         {
-            Debug.Log(1);
-            animator.SetTrigger("isAttack");
+            //빙의 가능한 상태
+            if (ispossession)
+            {
+                // 반환되는 오브젝트가 적이다?
+                if(possession.GetClickedObject().layer == (int)Define.Layer.Enemy)
+                {
+                    possession.Possession(possession.GetClickedObject());
+
+                    animator.SetTrigger("isDie");
+                    Managers.Input.KeyAction -= OnKeyBoard;
+                    Managers.Input.NonKeyAction -= NonKeyBoard;
+                    Managers.Input.MouseAction -= OnMouseClicked;
+
+                    gameObject.layer = (int)Define.Layer.Enemy;
+                    gameObject.tag = "Untagged";
+
+                    Destroy(gameObject, 3f);
+                }
+            }
+            else
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    animator.SetTrigger("isAttack");
+            }
         }
             
     }

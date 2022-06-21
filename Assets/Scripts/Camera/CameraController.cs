@@ -43,8 +43,6 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        playertransform = GameObject.Find("Player").GetComponent<Transform>();
-
         //카메라 수직축의 반만큼의 길이
         height = Camera.main.orthographicSize;
         //카메라 수평축의 반만큼의 길이
@@ -54,6 +52,7 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        
         CameraArea();
     }
 
@@ -61,7 +60,9 @@ public class CameraController : MonoBehaviour
 
     void CameraArea()
     {
-        if(cameraMoving)
+        playertransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+
+        if (cameraMoving)
         {
             Vector3 desiredPosition = new Vector3(
                 Mathf.Clamp(playertransform.position.x + offset.x, MinX + width, MaxX - width),

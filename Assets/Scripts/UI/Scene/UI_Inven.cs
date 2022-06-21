@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UI_Inven : UI_Scene
 {
     PlayerStat playerstat;
+    PlayerController Player;
 
     enum GameObjects
     {
@@ -18,7 +19,7 @@ public class UI_Inven : UI_Scene
         HPBarBack,
         HPBar,
         SkillIcon,
-        
+        Test,
     }
 
     enum Buttons
@@ -34,6 +35,7 @@ public class UI_Inven : UI_Scene
     void Start()
     {
         playerstat = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStat>();
+        
         Init();
     }
 
@@ -50,6 +52,7 @@ public class UI_Inven : UI_Scene
         //GetImage((int)Images.HPBar);
         GetImage((int)Images.SkillIcon);
         //GetText((int)Texts.HP).text = $"{playerstat.Hp}";
+        GetImage((int)Images.Test);
 
 
         for (int i = 0; i < 3; i++)
@@ -62,7 +65,16 @@ public class UI_Inven : UI_Scene
 
     private void Update()
     {
-        Debug.Log($"{playerstat.Hp}, {playerstat.MaxHp}, {playerstat.Hp / playerstat.MaxHp}");
+        Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        if (Player.ispossession)
+        {
+            GetImage((int)Images.Test).color = Color.black;
+        }
+        else
+        {
+            GetImage((int)Images.Test).color = Color.white;
+        }
+
         GetText((int)Texts.HP).text = $"{playerstat.Hp}";
         GetImage((int)Images.HPBar).fillAmount = Mathf.Lerp(GetImage((int)Images.HPBar).fillAmount, playerstat.Hp / playerstat.MaxHp, Time.deltaTime * 0.9f);
     }

@@ -11,16 +11,19 @@ public class Define
        Wall = 7,
        Player = 8,
        Platform = 9,
+       AttackCollider = 10,
+       //PlayerAttackCollider = 11,
     }
 
 
     public enum CreatureState
-    { 
-        Die,
+    {
         Idle,
         Moving,
+        Attack,
         Skill,
-        InjuredFront,
+        Die,
+        //InjuredFront,
     }
 
     public enum Scene

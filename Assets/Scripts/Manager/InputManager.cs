@@ -24,10 +24,12 @@ public class InputManager
 
 
         //키보드 키 감지 정의
-        if (Input.anyKey)
-            KeyAction.Invoke();
-        else NonKeyAction.Invoke();
-
+        if(KeyAction != null && NonKeyAction != null)
+        {
+            if (Input.anyKey)
+                KeyAction.Invoke();
+            else NonKeyAction.Invoke();
+        }
         //마우스 액션 감지 정의
         if(MouseAction != null)
         {

@@ -100,6 +100,8 @@ MonoBehaviour:
   _lockTarget: {fileID: 0}
   _scanRange: 7
   _attackRange: 1.7
+  distance: 0
+  height: 0
 --- !u!114 &7875035236631960698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7875035235985843125}
   - component: {fileID: 7875035235985843126}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: AttackCollider
   m_TagString: AttackCollider
   m_Icon: {fileID: 0}

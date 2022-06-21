@@ -30,12 +30,12 @@ public abstract class CreatureController : MonoBehaviour
                 case Define.CreatureState.Moving:
                     anim.CrossFade("Run", 0.1f);
                     break;
-                case Define.CreatureState.Skill:
+                case Define.CreatureState.Attack:
                     anim.CrossFade("Attack", 0.1f);
                     break;
-                case Define.CreatureState.InjuredFront:
-                    anim.CrossFade("InjuredFront", 0.1f);
-                    break;
+                //case Define.CreatureState.InjuredFront:
+                //    anim.CrossFade("InjuredFront", 0.1f);
+                //    break;
             }
         }
     }
@@ -47,6 +47,7 @@ public abstract class CreatureController : MonoBehaviour
 
     void Update()
     {
+        _lockTarget = GameObject.FindWithTag("Player");
         switch (State)
         {
             case Define.CreatureState.Die:
@@ -58,20 +59,20 @@ public abstract class CreatureController : MonoBehaviour
             case Define.CreatureState.Idle:
                 UpdateIdle();
                 break;
-            case Define.CreatureState.Skill:
-                UpdateSkill();
+            case Define.CreatureState.Attack:
+                UpdateAttack();
                 break;
-            case Define.CreatureState.InjuredFront:
-                UpdateInjuredFront();
-                break;
+            //case Define.CreatureState.InjuredFront:
+            //    UpdateInjuredFront();
+            //    break;
         }
     }
 
     protected virtual void UpdateDie() { }
     protected virtual void UpdateMoving() { }
     protected virtual void UpdateIdle() { }
-    protected virtual void UpdateSkill() { }
-    protected virtual void UpdateInjuredFront() { }
+    protected virtual void UpdateAttack() { }
+    //protected virtual void UpdateInjuredFront() { }
 
     protected abstract void Init();
 }
