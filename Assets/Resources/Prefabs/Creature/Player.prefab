@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4839246183726177681}
   - component: {fileID: 5323733306845489488}
   - component: {fileID: 4839246183726177687}
+  - component: {fileID: 992315017}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -124,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _jumpPower: 100
+  ispossession: 0
 --- !u!114 &4839246183726177687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,8 +143,21 @@ MonoBehaviour:
   _maxhp: 0
   _attck: 0
   _moveSpeed: 0
+  _possession: 0
   _exp: 0
   _gold: 0
+--- !u!114 &992315017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307094073657449168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b27ab8d4ed1475b4cb452ad2db53af45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5323733305075272980
 GameObject:
   m_ObjectHideFlags: 0

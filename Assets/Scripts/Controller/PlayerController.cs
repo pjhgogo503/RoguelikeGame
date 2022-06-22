@@ -8,10 +8,14 @@ public class PlayerController : MonoBehaviour
 
     public float _jumpPower; //플레이어 점프 파워
 
+    private BoxCollider2D boxCol2D;
     private Rigidbody2D rigid; //플레이어  rigid body
     private Animator animator; //플레이어 애니메이션
     private PossessionController possession; // 플레이어 빙의
 
+    private bool inputRight = false;
+    private bool inputLeft = false;
+    private bool inputJump = false;
     private bool isjumping; // 스크립트 내부 점프 상태 제어
     public bool ispossession; // 스크립트 내부 빙의 상태 제어
     private string animationState = "AnimationState";
@@ -30,6 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         _jumpPower = 100;
 
+        boxCol2D = GetComponent<BoxCollider2D>();
         playerstat = GetComponent<PlayerStat>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
@@ -49,40 +54,51 @@ public class PlayerController : MonoBehaviour
         //마우스 드래그 , 클릭 감지 ( Define 클래스 참고 )
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+
+        Debug.Log("Start Again");
        
     }
 
     private void Update()
     {
-        
+        RaycastHit2D raycasHit = Physics2D.BoxCast(boxCol2D.bounds.center, boxCol2D.bounds.size, 0f, Vector2.down, 0.02f, LayerMask.GetMask("Floor"));
+        if (raycasHit.collider != null)
+            animator.SetBool("isJumping", false);
+        else animator.SetBool("isJumping", true);
     }
 
     private void FixedUpdate()
     {
-        if(rigid.velocity.y < 0)
+        if(inputRight)
         {
-            RaycastHit2D hit = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Floor"));
-
-            if (hit.collider != null)
-            {
-                if (hit.distance < 0.2f)
-                {
-                    isjumping = false;
-                    animator.SetBool("isJumping", false);
-                }
-            }
+            inputRight = false;
+            rigid.MovePosition(rigid.position + Vector2.right * playerstat.MoveSpeed * Time.deltaTime);
         }
+        if(inputLeft)
+        {
+            inputLeft = false;
+            rigid.MovePosition(rigid.position + Vector2.left * playerstat.MoveSpeed * Time.deltaTime);
+        }
+        if(inputJump)
+        {
+            inputJump = false;
+            rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+        }
+
+        if (rigid.velocity.x >= 2.5f) rigid.velocity = new Vector2(2.5f, rigid.velocity.y);
+        else if (rigid.velocity.x <= -2.5f) rigid.velocity = new Vector2(-2.5f, rigid.velocity.y);
+        //rigid.MovePosition(rigid.position + dir * playerstat.MoveSpeed * Time.deltaTime);
     }
 
     // collider에 닿았을때
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(ispossession)
-            Debug.Log("OnCollisionEnter2D");
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if(ispossession)
+    //        Debug.Log("OnCollisionEnter2D");
 
-        if (collision.gameObject.layer == (int)Define.Layer.Enemy)
-            Debug.Log($"{collision.gameObject.name}");
-     }
+    //    if (collision.gameObject.layer == (int)Define.Layer.Enemy)
+    //        Debug.Log($"{collision.gameObject.name}");
+    // }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -106,25 +122,27 @@ public class PlayerController : MonoBehaviour
         ispossession = false;
         if (Input.GetKey(KeyCode.A)) // 왼쪽 이동
         {
+            inputLeft = true;
             animator.SetInteger(animationState, (int)States.Run);
             transform.localScale = new Vector3(-1, 1, 1); //왼쪽 바라보는 방향
-            transform.Translate(Vector3.left * Time.deltaTime * playerstat.MoveSpeed);  //방향 * 속도
         }
         if (Input.GetKey(KeyCode.D)) //오른쪽 이동
         {
+            inputRight = true;
             animator.SetInteger(animationState, (int)States.Run);
             transform.localScale = new Vector3(1, 1, 1); //오른쪽 바라보는 방향
-            transform.Translate(Vector3.right * Time.deltaTime * playerstat.MoveSpeed);
         }
-        if (Input.GetKey(KeyCode.Space)) //점프
+
+        if (Input.GetKeyDown(KeyCode.Space) && !animator.GetBool("isJumping")) //점프
         {
-            if (!isjumping) // 점프상태가 아니었을 때
-            {
-                //스크립트 내부 점프상태 전환
-                isjumping = true;
-                // 위로 힘을 줌
-                rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
-            }
+            inputJump = true;
+            //if (!isjumping) // 점프상태가 아니었을 때
+            //{
+            //    //스크립트 내부 점프상태 전환
+            //    isjumping = true;
+            //    // 위로 힘을 줌
+            //    rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+            //}
 
             animator.SetBool("isJumping", true); // 플레이어 점프 상태로 전환
         }
@@ -170,7 +188,11 @@ public class PlayerController : MonoBehaviour
             else
             {
                 if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                {
                     animator.SetTrigger("isAttack");
+                    Debug.Log("Attack On!!");
+                }
+                    
             }
         }
             

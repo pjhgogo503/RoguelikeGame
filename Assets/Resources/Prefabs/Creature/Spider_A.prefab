@@ -140,7 +140,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: 07dabb9f2913bd946952990cde61d21d, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!114 &9042514734812909616
 MonoBehaviour:
@@ -159,6 +159,7 @@ MonoBehaviour:
   _maxhp: 0
   _attck: 0
   _moveSpeed: 0
+  _possession: 0
 --- !u!114 &9042514734812909620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81b2a7ca4c152bd40951443af8dd457c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _state: 1
+  _state: 0
   _lockTarget: {fileID: 0}
   _scanRange: 10
   _attackRange: 1.7
