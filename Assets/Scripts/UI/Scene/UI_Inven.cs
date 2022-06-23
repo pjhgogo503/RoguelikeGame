@@ -34,7 +34,7 @@ public class UI_Inven : UI_Scene
 
     void Start()
     {
-        playerstat = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStat>();
+        
         
         Init();
     }
@@ -65,6 +65,7 @@ public class UI_Inven : UI_Scene
 
     private void Update()
     {
+        playerstat = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStat>();
         Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         if (Player.ispossession)
         {

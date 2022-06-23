@@ -27,8 +27,11 @@ public class MonsterController : CreatureController
     bool AI = false;
     string animationState = "AnimationState";
 
+    //int testcnt = 0;
+
     private void Awake()
     {
+        movementFlag = 1;
         Invoke("Think", 2);
     }
 
@@ -95,7 +98,7 @@ public class MonsterController : CreatureController
         }
         else { AI = true; if (movementFlag != 0) State = Define.CreatureState.Moving; }
 
-        if(stat.Hp <= 0)
+        if (stat.Hp <= 0)
         {
             State = Define.CreatureState.Die;
             return;
@@ -165,7 +168,8 @@ public class MonsterController : CreatureController
         XYcheck();
         anim.SetInteger(animationState, (int)Define.CreatureState.Attack);
         // 공격범위보다 distance가 멀어짐과 동시에 Attack 애니메이션이 1번이상 실행 된 상태
-        if (_attackRange < distance && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+        if (_attackRange < distance && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 &&
+            gameObject.GetComponentInChildren<ActionController>().equipWeapon == false)
         {
             if (stat.Hp <= 0)
             {
@@ -187,12 +191,12 @@ public class MonsterController : CreatureController
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log($"Monster hit! : {collision.name}");
-        if(State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
+        if (State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
         {
             Debug.Log("Monster Attack On");
             if (collision.gameObject.layer == (int)Define.Layer.Player)
                 playerstat.Hp -= stat.Attack;
-        } 
+        }
     }
 
     void MoveFlag(int movementFlag)
@@ -213,5 +217,4 @@ public class MonsterController : CreatureController
                 break;
         }
     }
-
 }

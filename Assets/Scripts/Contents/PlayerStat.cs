@@ -15,7 +15,7 @@ public class PlayerStat : Stat
     private void Start()
     {
         _level = 1;
-        _hp = 100;
+        //_hp = 100;
         _maxhp = 100;
         _attck = 10;
         _moveSpeed = 5;

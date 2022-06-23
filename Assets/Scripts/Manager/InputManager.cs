@@ -22,7 +22,6 @@ public class InputManager
             return;
         }
 
-
         //키보드 키 감지 정의
         if(KeyAction != null && NonKeyAction != null)
         {

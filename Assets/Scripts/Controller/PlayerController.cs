@@ -13,10 +13,10 @@ public class PlayerController : MonoBehaviour
     private Animator animator; //플레이어 애니메이션
     private PossessionController possession; // 플레이어 빙의
 
+    private bool inputIdle = false;
     private bool inputRight = false;
     private bool inputLeft = false;
     private bool inputJump = false;
-    private bool isjumping; // 스크립트 내부 점프 상태 제어
     public bool ispossession; // 스크립트 내부 빙의 상태 제어
     private string animationState = "AnimationState";
 
@@ -35,7 +35,19 @@ public class PlayerController : MonoBehaviour
         _jumpPower = 100;
 
         boxCol2D = GetComponent<BoxCollider2D>();
-        playerstat = GetComponent<PlayerStat>();
+        if (PossessionCount.PosCount == 0)
+        {
+            playerstat = GetComponent<PlayerStat>();
+            playerstat.Hp = 100;
+        }
+        else
+        {
+            playerstat = GetComponent<PlayerStat>();
+            Debug.Log($"first Start : current Hp : {PossessionCount.currentHp} and {playerstat.Hp}");
+            playerstat.Hp = PossessionCount.currentHp;
+            Debug.Log($"second Start : current Hp : {PossessionCount.currentHp} and {playerstat.Hp}");
+
+        }
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         possession = GetComponent<PossessionController>();
@@ -54,40 +66,37 @@ public class PlayerController : MonoBehaviour
         //마우스 드래그 , 클릭 감지 ( Define 클래스 참고 )
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
-
-        Debug.Log("Start Again");
-       
     }
 
     private void Update()
     {
-        RaycastHit2D raycasHit = Physics2D.BoxCast(boxCol2D.bounds.center, boxCol2D.bounds.size, 0f, Vector2.down, 0.02f, LayerMask.GetMask("Floor"));
-        if (raycasHit.collider != null)
-            animator.SetBool("isJumping", false);
-        else animator.SetBool("isJumping", true);
+
     }
 
     private void FixedUpdate()
     {
-        if(inputRight)
+        float fallSpeed = rigid.velocity.y;
+        if(inputIdle)
+        {
+            inputIdle = false;
+            rigid.velocity = new Vector2(0, fallSpeed);
+        }
+        if (inputRight)
         {
             inputRight = false;
-            rigid.MovePosition(rigid.position + Vector2.right * playerstat.MoveSpeed * Time.deltaTime);
+            rigid.velocity = new Vector2(playerstat.MoveSpeed, fallSpeed);
         }
         if(inputLeft)
         {
             inputLeft = false;
-            rigid.MovePosition(rigid.position + Vector2.left * playerstat.MoveSpeed * Time.deltaTime);
+            rigid.velocity = new Vector2(-playerstat.MoveSpeed, fallSpeed);
         }
-        if(inputJump)
+        if (inputJump)
         {
             inputJump = false;
             rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
         }
 
-        if (rigid.velocity.x >= 2.5f) rigid.velocity = new Vector2(2.5f, rigid.velocity.y);
-        else if (rigid.velocity.x <= -2.5f) rigid.velocity = new Vector2(-2.5f, rigid.velocity.y);
-        //rigid.MovePosition(rigid.position + dir * playerstat.MoveSpeed * Time.deltaTime);
     }
 
     // collider에 닿았을때
@@ -119,6 +128,12 @@ public class PlayerController : MonoBehaviour
     //키보드에 뭔가가 들어왔을 때 실행
     void OnKeyBoard()
     {
+        RaycastHit2D raycasHit = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, LayerMask.GetMask("Floor"));
+        Debug.DrawRay(transform.position, new Vector2(0, -0.3f), Color.red);
+        if (raycasHit.collider != null)
+            animator.SetBool("isJumping", false);
+        else animator.SetBool("isJumping", true);
+
         ispossession = false;
         if (Input.GetKey(KeyCode.A)) // 왼쪽 이동
         {
@@ -136,14 +151,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !animator.GetBool("isJumping")) //점프
         {
             inputJump = true;
-            //if (!isjumping) // 점프상태가 아니었을 때
-            //{
-            //    //스크립트 내부 점프상태 전환
-            //    isjumping = true;
-            //    // 위로 힘을 줌
-            //    rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
-            //}
-
             animator.SetBool("isJumping", true); // 플레이어 점프 상태로 전환
         }
         //빙의 테스트
@@ -156,7 +163,13 @@ public class PlayerController : MonoBehaviour
     //키보드 키 감지가 없는경우 실행
     void NonKeyBoard()
     {
+        RaycastHit2D raycasHit = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, LayerMask.GetMask("Floor"));
+        Debug.DrawRay(transform.position, new Vector2(0, -0.3f), Color.red);
+        if (raycasHit.collider != null) animator.SetBool("isJumping", false);
+        else animator.SetBool("isJumping", true);
+
         //플레이어 기본 상태
+        inputIdle = true;
         animator.SetInteger(animationState, (int)States.Idle);
     }
 
@@ -172,6 +185,8 @@ public class PlayerController : MonoBehaviour
                 // 반환되는 오브젝트가 적이다?
                 if(possession.GetClickedObject().layer == (int)Define.Layer.Enemy)
                 {
+                    float currentHp = playerstat.Hp;
+                    Debug.Log($"current player Hp : { playerstat.Hp}");
                     possession.Possession(possession.GetClickedObject());
 
                     animator.SetTrigger("isDie");
@@ -181,6 +196,8 @@ public class PlayerController : MonoBehaviour
 
                     gameObject.layer = (int)Define.Layer.Enemy;
                     gameObject.tag = "Untagged";
+                    PossessionCount.PosCount++;
+                    PossessionCount.currentHp = playerstat.Hp;
 
                     Destroy(gameObject, 3f);
                 }
