@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    PlayerStat playerstat;
-
-    public float _jumpPower; //플레이어 점프 파워
-
     private BoxCollider2D boxCol2D;
     private Rigidbody2D rigid; //플레이어  rigid body
     private Animator animator; //플레이어 애니메이션
@@ -17,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private bool inputRight = false;
     private bool inputLeft = false;
     private bool inputJump = false;
+    private bool isdie = false;
     public bool ispossession; // 스크립트 내부 빙의 상태 제어
     private string animationState = "AnimationState";
 
@@ -32,22 +29,7 @@ public class PlayerController : MonoBehaviour
 
     void Init() //플레이어 컴포넌트 연결부분
     {
-        _jumpPower = 100;
-
         boxCol2D = GetComponent<BoxCollider2D>();
-        if (PossessionCount.PosCount == 0)
-        {
-            playerstat = GetComponent<PlayerStat>();
-            playerstat.Hp = 100;
-        }
-        else
-        {
-            playerstat = GetComponent<PlayerStat>();
-            Debug.Log($"first Start : current Hp : {PossessionCount.currentHp} and {playerstat.Hp}");
-            playerstat.Hp = PossessionCount.currentHp;
-            Debug.Log($"second Start : current Hp : {PossessionCount.currentHp} and {playerstat.Hp}");
-
-        }
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         possession = GetComponent<PossessionController>();
@@ -84,39 +66,35 @@ public class PlayerController : MonoBehaviour
         if (inputRight)
         {
             inputRight = false;
-            rigid.velocity = new Vector2(playerstat.MoveSpeed, fallSpeed);
+            rigid.velocity = new Vector2(PlayerStat.MoveSpeed, fallSpeed);
         }
         if(inputLeft)
         {
             inputLeft = false;
-            rigid.velocity = new Vector2(-playerstat.MoveSpeed, fallSpeed);
+            rigid.velocity = new Vector2(-PlayerStat.MoveSpeed, fallSpeed);
         }
         if (inputJump)
         {
             inputJump = false;
-            rigid.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+            rigid.AddForce(Vector2.up * PlayerStat.JumpPower, ForceMode2D.Impulse);
+        }
+        if(isdie)
+        {
+            isdie = false;
+            rigid.velocity = new Vector2(0, fallSpeed);
         }
 
     }
 
-    // collider에 닿았을때
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if(ispossession)
-    //        Debug.Log("OnCollisionEnter2D");
-
-    //    if (collision.gameObject.layer == (int)Define.Layer.Enemy)
-    //        Debug.Log($"{collision.gameObject.name}");
-    // }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         Debug.Log($"Trigger : {collision.gameObject}");
         if (collision.gameObject.layer == (int)Define.Layer.Enemy)
-            collision.GetComponentInParent<Stat>().Hp -= playerstat.Attack;
+            collision.GetComponentInParent<Stat>().Hp -= PlayerStat.Attack;
 
-        if (playerstat.Hp <= 0)
+        if (PlayerStat.Hp <= 0)
         {
+            isdie = true;
             animator.SetTrigger("isDie");
             Managers.Input.KeyAction -= OnKeyBoard;
             Managers.Input.NonKeyAction -= NonKeyBoard;
@@ -134,7 +112,6 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isJumping", false);
         else animator.SetBool("isJumping", true);
 
-        ispossession = false;
         if (Input.GetKey(KeyCode.A)) // 왼쪽 이동
         {
             inputLeft = true;
@@ -153,11 +130,13 @@ public class PlayerController : MonoBehaviour
             inputJump = true;
             animator.SetBool("isJumping", true); // 플레이어 점프 상태로 전환
         }
-        //빙의 테스트
+
+        //빙의 상태
         if (Input.GetKey(KeyCode.LeftShift))
         {
             ispossession = true;
         }
+
     }
 
     //키보드 키 감지가 없는경우 실행
@@ -182,11 +161,12 @@ public class PlayerController : MonoBehaviour
             //빙의 가능한 상태
             if (ispossession)
             {
+                PlayerStat.Test = true;
                 // 반환되는 오브젝트가 적이다?
-                if(possession.GetClickedObject().layer == (int)Define.Layer.Enemy)
+                if (possession.GetClickedObject().layer == (int)Define.Layer.Enemy)
                 {
-                    float currentHp = playerstat.Hp;
-                    Debug.Log($"current player Hp : { playerstat.Hp}");
+                    float currentHp = PlayerStat.Hp;
+                    Debug.Log($"current player Hp : {PlayerStat.Hp}");
                     possession.Possession(possession.GetClickedObject());
 
                     animator.SetTrigger("isDie");
@@ -194,12 +174,12 @@ public class PlayerController : MonoBehaviour
                     Managers.Input.NonKeyAction -= NonKeyBoard;
                     Managers.Input.MouseAction -= OnMouseClicked;
 
+                    
+
                     gameObject.layer = (int)Define.Layer.Enemy;
                     gameObject.tag = "Untagged";
-                    PossessionCount.PosCount++;
-                    PossessionCount.currentHp = playerstat.Hp;
 
-                    Destroy(gameObject, 3f);
+                    Destroy(gameObject, 5f);
                 }
             }
             else

@@ -33,9 +33,6 @@ public abstract class CreatureController : MonoBehaviour
                 case Define.CreatureState.Attack:
                     anim.CrossFade("Attack", 0.1f);
                     break;
-                //case Define.CreatureState.InjuredFront:
-                //    anim.CrossFade("InjuredFront", 0.1f);
-                //    break;
             }
         }
     }

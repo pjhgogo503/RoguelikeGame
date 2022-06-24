@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Inven : UI_Scene
+public class UI_Information : UI_Scene
 {
-    PlayerStat playerstat;
     PlayerController Player;
 
     enum GameObjects
@@ -65,18 +64,12 @@ public class UI_Inven : UI_Scene
 
     private void Update()
     {
-        playerstat = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStat>();
         Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        if (Player.ispossession)
-        {
-            GetImage((int)Images.Test).color = Color.black;
-        }
-        else
-        {
-            GetImage((int)Images.Test).color = Color.white;
-        }
+        if (Player.ispossession) GetImage((int)Images.Test).color = Color.black;
+        else GetImage((int)Images.Test).color = Color.white;
 
-        GetText((int)Texts.HP).text = $"{playerstat.Hp}";
-        GetImage((int)Images.HPBar).fillAmount = Mathf.Lerp(GetImage((int)Images.HPBar).fillAmount, playerstat.Hp / playerstat.MaxHp, Time.deltaTime * 0.9f);
+        GetText((int)Texts.HP).text = $"{PlayerStat.Hp}";
+        GetImage((int)Images.HPBar).fillAmount = Mathf.Lerp(GetImage((int)Images.HPBar).fillAmount, PlayerStat.Hp / PlayerStat.MaxHp, Time.deltaTime * 0.9f);
+        Player.ispossession = false;
     }
 }

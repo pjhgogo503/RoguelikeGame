@@ -6,8 +6,8 @@ using UnityEngine.AI;
 public class MonsterController : CreatureController
 {
     Stat stat;
-    PlayerStat playerstat;
     Rigidbody2D _rigid;
+    ActionController action;
 
     [SerializeField]
     float _scanRange = 5;
@@ -27,8 +27,6 @@ public class MonsterController : CreatureController
     bool AI = false;
     string animationState = "AnimationState";
 
-    //int testcnt = 0;
-
     private void Awake()
     {
         movementFlag = 1;
@@ -37,7 +35,6 @@ public class MonsterController : CreatureController
 
     void Think()
     {
-        //Debug.Log($"invoke counting : {testcount}");
         movementFlag = Random.Range(-1, 2);
         Invoke("Think", 2);
     }
@@ -47,7 +44,7 @@ public class MonsterController : CreatureController
         stat = gameObject.GetComponent<Stat>();
         _rigid = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
-        playerstat = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStat>();
+        action = GetComponentInChildren<ActionController>();
 
         stat.Level = 1;
         stat.MaxHp = 100;
@@ -184,18 +181,15 @@ public class MonsterController : CreatureController
 
     protected override void UpdateDie()
     {
-        anim.SetInteger(animationState, (int)Define.CreatureState.Die);
-        Destroy(gameObject, 3);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log($"Monster hit! : {collision.name}");
-        if (State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
+        anim.SetInteger(animationState, (int)Define.CreatureState.Idle);
+        if (!PlayerStat.Test)
         {
-            Debug.Log("Monster Attack On");
-            if (collision.gameObject.layer == (int)Define.Layer.Player)
-                playerstat.Hp -= stat.Attack;
+            action.PossessionTimerOn();
+            if (action.Timer.GetComponent<PossessionRadialProgress>().test)
+            {
+                anim.SetInteger(animationState, (int)Define.CreatureState.Die);
+                Destroy(gameObject, 2);
+            }
         }
     }
 
@@ -215,6 +209,21 @@ public class MonsterController : CreatureController
                 anim.SetInteger(animationState, (int)Define.CreatureState.Idle);
                 State = Define.CreatureState.Idle;
                 break;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log($"Monster hit! : {collision.name}");
+        if (State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
+        {
+            Debug.Log("Monster Attack On");
+            if (collision.gameObject.layer == (int)Define.Layer.Player)
+            {
+                if (PlayerStat.Hp > 0)
+                    PlayerStat.Hp -= stat.Attack;
+            }
+
         }
     }
 }

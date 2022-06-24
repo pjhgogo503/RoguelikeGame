@@ -5,10 +5,9 @@ using UnityEngine;
 public class ActionController : MonoBehaviour
 {
     public Transform WeaponPosition;
-
     public GameObject AttackCollider;
-
-    public bool equipWeapon;
+    public GameObject Timer;
+    public bool equipWeapon = false;
 
     public void AttackColliderOnOff()
     {
@@ -23,4 +22,9 @@ public class ActionController : MonoBehaviour
         else AttackCollider.SetActive(false);
     }
 
+    public void PossessionTimerOn()
+    {
+        //Timer.transform.position = /*Camera.main.WorldToScreenPoint(*/gameObject.transform.parent.gameObject.transform.position + Vector3.up;//);
+        Timer.SetActive(true);
+    }
 }

@@ -29,8 +29,7 @@ public class PossessionController : MonoBehaviour
         Destroy(go.GetComponent<Stat>());
 
         go.AddComponent<PlayerController>();
-        go.AddComponent<PlayerStat>();
         go.AddComponent<PossessionController>();
-        go.GetComponentInChildren<Animator>().speed = 2;
+        go.GetComponentInChildren<Animator>().speed = PlayerStat.AttackSpeed;
     }
 }
