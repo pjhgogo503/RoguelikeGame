@@ -14,7 +14,7 @@ public class PlayerStat
     public static int _gold = 0;
     public static float _jumpPower = 100;
 
-    public static bool test = false;
+    public static bool _possessionClick = false;
 
     public static int Level { get { return _level; } set { _level = value; } }
     public static float Hp { get { return _hp; } set { _hp = value; } }
@@ -26,7 +26,7 @@ public class PlayerStat
     public static int Gold { get { return _gold; } set { _gold = value; } }
     public static float JumpPower { get { return _jumpPower; } set { _jumpPower = value; } }
 
-    public static bool Test { get { return test; } set { test = value; } }
+    public static bool PossessionClicked { get { return _possessionClick; } set { _possessionClick = value; } }
 
 
 }

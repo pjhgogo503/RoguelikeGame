@@ -23,8 +23,11 @@ public class ActionController : MonoBehaviour
     }
 
     public void PossessionTimerOn()
-    {
-        //Timer.transform.position = /*Camera.main.WorldToScreenPoint(*/gameObject.transform.parent.gameObject.transform.position + Vector3.up;//);
+    {  
         Timer.SetActive(true);
+    }
+    public void PossessionTimerOff()
+    {
+        Timer.SetActive(false);
     }
 }

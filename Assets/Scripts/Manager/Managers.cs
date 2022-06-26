@@ -5,22 +5,27 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {
     static Managers s_instance; // 매니저 인스턴스 유일성 보장
-    static Managers Instance { get { init(); return s_instance; } } //모든걸 Instance로 통제
+    static Managers Instance { get { Init(); return s_instance; } } //모든걸 Instance로 통제
 
     InputManager _input = new InputManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerExtended _scene = new SceneManagerExtended();
     UIManager _ui = new UIManager();
+    DataManager _data = new DataManager();
+    TalkManager _talk = new TalkManager();
 
     public static InputManager Input { get { return Instance._input; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SceneManagerExtended Scene { get { return Instance._scene; } }
     public static UIManager UI { get { return Instance._ui; } }
+    public static DataManager Data { get { return Instance._data; } }
+    public static TalkManager Talk { get { return Instance._talk; } }
+
 
     void Start()
     {
         //초기화
-        init();
+        Init();
     }
 
     void Update()
@@ -28,7 +33,7 @@ public class Managers : MonoBehaviour
         _input.OnUpdate();
     }
 
-    static void init()
+    static void Init()
     {
         if(s_instance == null)
         {
@@ -43,6 +48,12 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
         }
-        
+    }
+
+    public static void Clear()
+    {
+        Input.Clear();
+        Scene.Clear();
+        UI.Clear();
     }
 }

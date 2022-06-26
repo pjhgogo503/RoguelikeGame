@@ -50,9 +50,6 @@ TextureImporter:
   - first:
       213: 21300030
     second: TX UI Demo Slider Bar
-  - first:
-      213: 7366979999835113132
-    second: TX UI Demo Key H
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -126,7 +123,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -138,31 +135,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 1
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: iPhone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 1
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -466,7 +439,7 @@ TextureImporter:
         serializedVersion: 2
         x: 143
         y: 46
-        width: 19
+        width: 18
         height: 19
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -502,27 +475,6 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: TX UI Demo Key H
-      rect:
-        serializedVersion: 2
-        x: 175
-        y: 46
-        width: 19
-        height: 19
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca644952745cc3660800000000000000
-      internalID: 7366979999835113132
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -547,7 +499,6 @@ TextureImporter:
       TX UI Demo Slider Bar: 21300030
       TX UI Demo Key D: 21300008
       TX UI Demo Key ]: 21300028
-      TX UI Demo Key H: 7366979999835113132
       TX UI Demo Key A: 21300004
       TX UI Demo Key G: 21300022
       TX UI Demo Key K: 21300024

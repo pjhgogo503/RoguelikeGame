@@ -97,6 +97,9 @@ public class MonsterController : CreatureController
 
         if (stat.Hp <= 0)
         {
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
             State = Define.CreatureState.Die;
             return;
         }
@@ -155,6 +158,9 @@ public class MonsterController : CreatureController
         }
         if (stat.Hp <= 0)
         {
+            if(action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
             State = Define.CreatureState.Die;
             return;
         }
@@ -170,6 +176,9 @@ public class MonsterController : CreatureController
         {
             if (stat.Hp <= 0)
             {
+                if (action.equipWeapon)
+                    action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+                action.PossessionTimerOn(); //타이머 ON
                 State = Define.CreatureState.Die;
                 return;
             }
@@ -181,15 +190,9 @@ public class MonsterController : CreatureController
 
     protected override void UpdateDie()
     {
-        anim.SetInteger(animationState, (int)Define.CreatureState.Idle);
-        if (!PlayerStat.Test)
+        if (action.Timer.GetComponent<PossessionRadialProgress>().timeover)
         {
-            action.PossessionTimerOn();
-            if (action.Timer.GetComponent<PossessionRadialProgress>().test)
-            {
-                anim.SetInteger(animationState, (int)Define.CreatureState.Die);
-                Destroy(gameObject, 2);
-            }
+            Destroy(gameObject);
         }
     }
 
@@ -212,7 +215,7 @@ public class MonsterController : CreatureController
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         Debug.Log($"Monster hit! : {collision.name}");
         if (State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
@@ -224,6 +227,12 @@ public class MonsterController : CreatureController
                     PlayerStat.Hp -= stat.Attack;
             }
 
+        }
+        if(stat.Hp <= 0) {
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
+            State = Define.CreatureState.Die;
         }
     }
 }

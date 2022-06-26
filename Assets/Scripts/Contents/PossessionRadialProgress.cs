@@ -8,20 +8,20 @@ public class PossessionRadialProgress : MonoBehaviour
 {
     public Text timer;
     public Image circlegauge;
-    public bool test = false;
+    public bool timeover = false;
     float time = 5;
 
     void Start()
     {
-        timer.text = "5";
+        //timer.text = "6";
     }
 
     void Update()
     {
         time -= Time.deltaTime;
-        timer.text = Mathf.Floor(time).ToString();
+        //timer.text = Mathf.Floor(time).ToString();
         circlegauge.fillAmount = time / 5;
-        if (timer.text == "0") test = true;
+        if (time <= 0.000000f) timeover = true;
     }
 
 }

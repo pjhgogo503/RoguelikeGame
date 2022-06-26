@@ -12,7 +12,7 @@ public class Define
        Player = 8,
        Platform = 9,
        AttackCollider = 10,
-       //PlayerAttackCollider = 11,
+       NPC = 11,
     }
 
 
@@ -47,6 +47,12 @@ public class Define
         Click,
         Drag,
     }
+
+    public enum NPC
+    {
+        Tutorial,
+    }
+
 }
 
 
