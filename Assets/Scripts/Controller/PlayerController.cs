@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private PossessionController possession; // 플레이어 빙의
     private ActionController action;
     public EffectController effect;
+    private GameObject target = null;
 
     private bool inputIdle = false;
     private bool inputRight = false;
@@ -41,6 +42,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if (PlayerStat.ShortOrLong)
+        {
+            gameObject.AddComponent<ProjectileController>();
+            target = Managers.Resource.Instantiate($"UI/Target");
+        }
         Init();
         action.PossessionTimerOff();
         //Input Manager 이용 
@@ -57,7 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-
+        if(target != null) target.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 1);
     }
 
     private void FixedUpdate()
@@ -180,51 +186,50 @@ public class PlayerController : MonoBehaviour
         // 클릭상태이고 현재 플레이어가 Attack 상태가 아닐 때
         if(mouse == Define.MouseEvent.Click)
         {
-            //if (possession.GetClickedObject().layer == (int)Define.Layer.NPC)
-            //{
-            //    return;
-            //}
-            //else
-            //{
-                //빙의 가능한 상태
-                if (ispossession)
+            //빙의 가능한 상태
+            if (ispossession)
+            {
+                // 반환되는 오브젝트가 적이다?
+                if (possession.GetClickedObject().layer == (int)Define.Layer.Enemy
+                    && possession.GetClickedObject().GetComponent<Stat>().Hp <= 0)
                 {
-                    // 반환되는 오브젝트가 적이다?
-                    if (possession.GetClickedObject().layer == (int)Define.Layer.Enemy
-                        && possession.GetClickedObject().GetComponent<Stat>().Hp <= 0)
-                    {
-                        PlayerStat.PossessionClicked = true;
+                    PlayerStat.PossessionClicked = true;
+                    if (possession.GetClickedObject().tag == "Landing_Long" || possession.GetClickedObject().tag == "Flying_Long") PlayerStat.ShortOrLong = true;
+                    else PlayerStat.ShortOrLong = false;
+                    if (possession.GetClickedObject().tag == "Flying_Short" || possession.GetClickedObject().tag == "Flying_Long") PlayerStat.LandOrFly = true;
+                    else PlayerStat.LandOrFly = false;
 
-                        float currentHp = PlayerStat.Hp;
-                        Debug.Log($"current player Hp : {PlayerStat.Hp}");
-                        possession.Possession(possession.GetClickedObject());
+                    float currentHp = PlayerStat.Hp;
+                    Debug.Log($"current player Hp : {PlayerStat.Hp}");
+                    possession.Possession(possession.GetClickedObject());
 
-                        animator.SetBool("isDie", true);
-                        Managers.Input.KeyAction -= OnKeyBoard;
-                        Managers.Input.NonKeyAction -= NonKeyBoard;
-                        Managers.Input.MouseAction -= OnMouseClicked;
+                    animator.SetBool("isDie", true);
+                    Managers.Input.KeyAction -= OnKeyBoard;
+                    Managers.Input.NonKeyAction -= NonKeyBoard;
+                    Managers.Input.MouseAction -= OnMouseClicked;
 
 
 
-                        gameObject.layer = (int)Define.Layer.Enemy;
-                        gameObject.tag = "Untagged";
+                    gameObject.layer = (int)Define.Layer.Enemy;
+                    gameObject.tag = "Untagged";
 
-                        Destroy(gameObject, 5f);
-                    }
+                    Destroy(gameObject, 5f);
                 }
-                else
+            }
+            else
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 {
-                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+                    if (PlayerStat.ShortOrLong)
                     {
-                        animator.SetTrigger("isAttack");
-
+                        if (transform.position.x >= Camera.main.ScreenToWorldPoint(Input.mousePosition).x) gameObject.transform.localScale = new Vector3(-1, 1, 1);
+                        else gameObject.transform.localScale = new Vector3(1, 1, 1);
                     }
+                    animator.SetTrigger("isAttack");
 
                 }
-            //}
-        }
-            
+
+            }
+        }       
     }
-
-    
 }

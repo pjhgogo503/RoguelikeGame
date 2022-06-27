@@ -7,8 +7,7 @@ public abstract class CreatureController : MonoBehaviour
     [SerializeField]
     Define.CreatureState _state = Define.CreatureState.Idle;
 
-    [SerializeField]
-    protected GameObject _lockTarget;
+    public GameObject _lockTarget;
 
     public virtual Define.CreatureState State
     {

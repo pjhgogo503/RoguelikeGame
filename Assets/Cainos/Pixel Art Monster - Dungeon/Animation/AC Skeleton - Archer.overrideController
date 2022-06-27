@@ -9,7 +9,5 @@ AnimatorOverrideController:
   m_Name: AC Skeleton - Archer
   m_Controller: {fileID: 9100000, guid: 24c5b59b76390944a8ccd90f8bdf7403, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: d58ef92da4c6e7f4fb2bf7099e8470a3, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: d58ef92da4c6e7f4fb2bf7099e8470a3, type: 3}
-  - m_OriginalClip: {fileID: 7400000, guid: 921691986e32a394f9849a7258c05dc3, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 1eb7b69e184d84c4e90a5de05da53e31, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 7cf499fa973bdb44d9888ac4060ae004, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fb1ff84c5b4483c448d3b90775a8d6db, type: 2}

@@ -8,6 +8,10 @@ TagManager:
   - NextStage
   - AttackCollider
   - PlayerAttackCollider
+  - Landing_Short
+  - Landing_Long
+  - Flying_Short
+  - Flying_Long
   - New tag
   layers:
   - Default
@@ -22,7 +26,7 @@ TagManager:
   - Platform
   - AttackCollider
   - NPC
-  - 
+  - Projectile
   - 
   - 
   - 

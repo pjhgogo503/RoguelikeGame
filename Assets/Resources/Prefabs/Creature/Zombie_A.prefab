@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1017393457}
   m_Layer: 3
   m_Name: Zombie_A
-  m_TagString: Untagged
+  m_TagString: Landing_Short
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -598,4 +598,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponPosition: {fileID: 0}
   AttackCollider: {fileID: 7875035235985843124}
+  Timer: {fileID: 0}
   equipWeapon: 0

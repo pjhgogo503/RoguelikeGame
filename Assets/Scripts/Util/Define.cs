@@ -13,8 +13,8 @@ public class Define
        Platform = 9,
        AttackCollider = 10,
        NPC = 11,
+       Projectile = 12,
     }
-
 
     public enum CreatureState
     {
