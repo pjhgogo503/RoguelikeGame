@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
 
     void Init() //플레이어 컴포넌트 연결부분
     {
+        DontDestroyOnLoad(this.gameObject);
+
         boxCol2D = GetComponent<BoxCollider2D>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();

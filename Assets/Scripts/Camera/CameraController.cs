@@ -43,6 +43,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         //카메라 수직축의 반만큼의 길이
         height = Camera.main.orthographicSize;
         //카메라 수평축의 반만큼의 길이

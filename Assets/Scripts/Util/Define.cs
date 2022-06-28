@@ -28,11 +28,8 @@ public class Define
 
     public enum Scene
     {
-        Unknown,
         Tutorial,
-        Stage1,
-        Lobby,
-        Game,
+        Stage1_1,
     }
 
 

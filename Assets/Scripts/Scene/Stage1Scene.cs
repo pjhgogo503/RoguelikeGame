@@ -9,7 +9,7 @@ public class Stage1Scene : BaseScene
     {
         base.Init();
 
-        SceneType = Define.Scene.Stage1;
+        SceneType = Define.Scene.Stage1_1;
     }
 
     private void Update()

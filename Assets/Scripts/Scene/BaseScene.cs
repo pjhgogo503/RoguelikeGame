@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public abstract class BaseScene : MonoBehaviour
 {
     //get -> public, set -> protected
-    public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
+    public Define.Scene SceneType { get; protected set; } = Define.Scene.Tutorial;
 
     // 기능이 꺼져도 작동
     void Awake()

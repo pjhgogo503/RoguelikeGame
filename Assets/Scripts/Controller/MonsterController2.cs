@@ -170,6 +170,8 @@ public class MonsterController2 : CreatureController
     {
         XYcheck();
         anim.SetInteger(animationState, (int)Define.CreatureState.Attack);
+        if (transform.position.x < _lockTarget.transform.position.x) transform.localScale = new Vector3(1, 1, 1); //왼쪽 바라보는 방향
+        else transform.localScale = new Vector3(-1, 1, 1); //오른쪽 바라보는 방향
         //  Attack 애니메이션이 1번이상 실행 된 상태
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
         {
@@ -179,9 +181,6 @@ public class MonsterController2 : CreatureController
                 State = Define.CreatureState.Moving;
                 return;
             }
-            if (transform.position.x < _lockTarget.transform.position.x) transform.localScale = new Vector3(1, 1, 1); //왼쪽 바라보는 방향
-            else transform.localScale = new Vector3(-1, 1, 1); //오른쪽 바라보는 방향
-
             if (stat.Hp <= 0)
             {      
                 action.PossessionTimerOn(); //타이머 ON
