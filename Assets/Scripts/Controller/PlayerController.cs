@@ -44,8 +44,8 @@ public class PlayerController : MonoBehaviour
     {
         if (PlayerStat.ShortOrLong)
         {
+            target = GameObject.Find("Target");
             gameObject.AddComponent<ProjectileController>();
-            target = Managers.Resource.Instantiate($"UI/Target");
         }
         Init();
         action.PossessionTimerOff();
@@ -107,15 +107,15 @@ public class PlayerController : MonoBehaviour
                 if (transform.position.x <= collision.transform.position.x)
                 {
                     collision.transform.position += new Vector3(0.3f, 0, 0);
-                    effect.hit_closeRange.transform.localScale = new Vector3(-0.5f, 0.5f, 1);
+                    effect.effect[0].transform.localScale = new Vector3(-0.5f, 0.5f, 1);
                 }
                 else
                 {
                     collision.transform.position += new Vector3(-0.3f, 0, 0);
-                    effect.hit_closeRange.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+                    effect.effect[0].transform.localScale = new Vector3(0.5f, 0.5f, 1);
                 }
 
-                effect.EffectOn(collision.transform);
+                effect.EffectOn(collision.transform, "Slash 3");
                 collision.GetComponentInParent<Stat>().Hp -= PlayerStat.Attack;
             }
         }
@@ -140,17 +140,26 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isJumping", false);
         else animator.SetBool("isJumping", true);
 
+        if(PlayerStat.ShortOrLong)
+        {
+            if (transform.position.x >= Camera.main.ScreenToWorldPoint(Input.mousePosition).x) transform.localScale = new Vector3(-1, 1, 1);
+            else transform.localScale = new Vector3(1, 1, 1);
+        }
+
         if (Input.GetKey(KeyCode.A)) // 왼쪽 이동
         {
             inputLeft = true;
             animator.SetInteger(animationState, (int)States.Run);
-            transform.localScale = new Vector3(-1, 1, 1); //왼쪽 바라보는 방향
+           
+            if(!PlayerStat.ShortOrLong) transform.localScale = new Vector3(-1, 1, 1); //왼쪽 바라보는 방향
         }
         if (Input.GetKey(KeyCode.D)) //오른쪽 이동
         {
             inputRight = true;
             animator.SetInteger(animationState, (int)States.Run);
-            transform.localScale = new Vector3(1, 1, 1); //오른쪽 바라보는 방향
+
+            if (!PlayerStat.ShortOrLong) transform.localScale = new Vector3(1, 1, 1); //오른쪽 바라보는 방향
+
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && !animator.GetBool("isJumping")) //점프
@@ -178,6 +187,12 @@ public class PlayerController : MonoBehaviour
         //플레이어 기본 상태
         inputIdle = true;
         animator.SetInteger(animationState, (int)States.Idle);
+
+        if (PlayerStat.ShortOrLong)
+        {
+            if (transform.position.x >= Camera.main.ScreenToWorldPoint(Input.mousePosition).x) transform.localScale = new Vector3(-1, 1, 1);
+            else transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 
     //마우스에 (드래그 , 클릭) 들어왔을 때
@@ -194,11 +209,20 @@ public class PlayerController : MonoBehaviour
                     && possession.GetClickedObject().GetComponent<Stat>().Hp <= 0)
                 {
                     PlayerStat.PossessionClicked = true;
+
                     if (possession.GetClickedObject().tag == "Landing_Long" || possession.GetClickedObject().tag == "Flying_Long") PlayerStat.ShortOrLong = true;
                     else PlayerStat.ShortOrLong = false;
                     if (possession.GetClickedObject().tag == "Flying_Short" || possession.GetClickedObject().tag == "Flying_Long") PlayerStat.LandOrFly = true;
                     else PlayerStat.LandOrFly = false;
 
+                    if (PlayerStat.ShortOrLong)
+                    {
+                        GameObject go = GameObject.Find("Target");
+                        if(go == null)
+                            target = Managers.Resource.Instantiate($"UI/Target");
+                    }
+                    else Managers.Resource.Destroy(GameObject.Find("Target"));
+                            
                     float currentHp = PlayerStat.Hp;
                     Debug.Log($"current player Hp : {PlayerStat.Hp}");
                     possession.Possession(possession.GetClickedObject());
@@ -220,11 +244,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 {
-                    if (PlayerStat.ShortOrLong)
-                    {
-                        if (transform.position.x >= Camera.main.ScreenToWorldPoint(Input.mousePosition).x) gameObject.transform.localScale = new Vector3(-1, 1, 1);
-                        else gameObject.transform.localScale = new Vector3(1, 1, 1);
-                    }
+                    
                     animator.SetTrigger("isAttack");
 
                 }

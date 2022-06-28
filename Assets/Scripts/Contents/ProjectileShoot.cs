@@ -5,68 +5,36 @@ using UnityEngine;
 public class ProjectileShoot : MonoBehaviour
 {
     [SerializeField]
-    float _speed = 1f;
+    private float _speed = 1f;
     [SerializeField]
-    int _attack = 10;
-    float distance = 0.2f;
-    float angle;
-    RaycastHit2D hit;
-    RaycastHit2D ray;
-    GameObject Player;
-    Vector3 PlayerShotdir = Vector3.zero;
-    static string Who;
+    private int _attack = 10;
+    private float distance = 0.2f;
+    private float angle;
+    private static string Who;
 
+    private RaycastHit2D hit;
+    private RaycastHit2D ray;
+    private Vector3 PlayerShotdir = Vector3.zero;
+
+    EffectController ef;
+    string Effect;
+    
     private void Start()
     {
+        EffectSelect();
+
         if (gameObject.transform.localScale.x >= 0) hit = Physics2D.Raycast(transform.position, Vector3.left, 2f, LayerMask.GetMask("Player", "Enemy"));
         else hit = Physics2D.Raycast(transform.position, Vector3.right, 2f, LayerMask.GetMask("Player", "Enemy"));
 
         switch(hit.collider.gameObject.layer)
         {
             case (int)Define.Layer.Player:
-                Player = GameObject.FindGameObjectWithTag("Player");
                 PlayerShotdir = (Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 10)) - this.transform.position;
                 angle = Mathf.Atan2(PlayerShotdir.y, PlayerShotdir.x) * Mathf.Rad2Deg;
-                Debug.Log($"{ angle} µµ");
+
                 if (this.transform.localScale == new Vector3(1, 1, 1)) transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                 else transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
 
-                PlayerShotdir = ((Camera.main.ScreenToWorldPoint(Input.mousePosition) + new Vector3(0, 0, 10)) - this.transform.position).normalized;
-                //if (this.transform.localScale == new Vector3(-1, 1, 1))
-                //    transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-                //else transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-                //angle = Mathf.Atan2(Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y, Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x) * Mathf.Rad2Deg;
-                //if (this.transform.localScale == new Vector3(1, 1, 1))
-                //{
-                //    if (angle >= 0)
-                //    {
-                //        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y >= 0)
-                //            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                //        else transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-                //    }
-                //    else
-                //    {
-                //        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y <= 0)
-                //            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                //        else transform.rotation = Quaternion.AngleAxis(angle - 180, Vector3.forward);
-                //    }
-                //}
-                //else
-                //{
-                //    if (angle >= 0)
-                //    {
-                //        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y >= 0)
-                //            transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-                //        else transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                //    }
-                //    else
-                //    {
-                //        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y >= 0)
-                //            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                //        else transform.rotation = Quaternion.AngleAxis(angle - 180, Vector3.forward);
-                //    }
-                //}
                 Who = "Player"; break;
             case (int)Define.Layer.Enemy:
                 Who = "Enemy"; break;
@@ -87,8 +55,16 @@ public class ProjectileShoot : MonoBehaviour
 
     void PlayerShot()
     {
-        gameObject.transform.Translate(PlayerShotdir * _speed * Time.deltaTime);
-        ray = Physics2D.Raycast(transform.position, PlayerShotdir, distance, LayerMask.GetMask("Enemy", "Floor"));
+        if (gameObject.transform.localScale.x >= 0)
+        {
+            ray = Physics2D.Raycast(transform.position, Vector3.right, distance, LayerMask.GetMask("Enemy", "Floor"));
+            gameObject.transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
+        else
+        {
+            ray = Physics2D.Raycast(transform.position, Vector3.left, distance, LayerMask.GetMask("Enemy", "Floor"));
+            gameObject.transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        }
 
         if (ray.collider == null) Invoke("DestroyShot", 2);
         else
@@ -96,7 +72,10 @@ public class ProjectileShoot : MonoBehaviour
             if (ray.collider.gameObject.layer == (int)Define.Layer.Enemy)
             {
                 if (ray.collider.GetComponent<Stat>().Hp > 0)
+                {
+                    ef.EffectOn(ray.collider.transform, Effect);
                     ray.collider.GetComponent<Stat>().Hp -= _attack;
+                }
                 Destroy(gameObject);
             }
             if (ray.collider.gameObject.layer == (int)Define.Layer.Floor)
@@ -123,7 +102,10 @@ public class ProjectileShoot : MonoBehaviour
             if (ray.collider.gameObject.layer == (int)Define.Layer.Player)
             {
                 if (PlayerStat.Hp > 0)
+                {
+                    ef.EffectOn(ray.collider.transform, Effect);
                     PlayerStat.Hp -= _attack;
+                }
                 Destroy(gameObject);
             }
             if (ray.collider.gameObject.layer == (int)Define.Layer.Floor)
@@ -134,6 +116,13 @@ public class ProjectileShoot : MonoBehaviour
     public void DestroyShot()
     {
         Destroy(gameObject);
+    }
+
+    public void EffectSelect()
+    {
+        ef = GameObject.Find("Effect").GetComponent<EffectController>();
+        if (gameObject.name == "Arrow") Effect = "Blood";
+        else if (gameObject.name == "Magic Missile") Effect = "Magic Missile explosion"; //magic missile explosion
     }
         
 }

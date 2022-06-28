@@ -49,7 +49,7 @@ public class MonsterController1 : CreatureController
 
         stat.Level = 1;
         stat.MaxHp = 100;
-        stat.Hp = 50;
+        stat.Hp = 10;
         stat.MoveSpeed = 2;
         stat.Attack = 10;
     }
@@ -159,10 +159,12 @@ public class MonsterController1 : CreatureController
         }
         if (stat.Hp <= 0)
         {
+            State = Define.CreatureState.Die;
+            if (AI) AI = false;
+            CancelInvoke();
             if(action.equipWeapon)
                 action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
             action.PossessionTimerOn(); //타이머 ON
-            State = Define.CreatureState.Die;
             return;
         }
     }

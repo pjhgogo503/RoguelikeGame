@@ -9,7 +9,5 @@ AnimatorOverrideController:
   m_Name: AC Skeleton - Mage
   m_Controller: {fileID: 9100000, guid: 24c5b59b76390944a8ccd90f8bdf7403, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 921691986e32a394f9849a7258c05dc3, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 5e1d17349e867fb4b978bd2ef104b52e, type: 3}
-  - m_OriginalClip: {fileID: 7400000, guid: d58ef92da4c6e7f4fb2bf7099e8470a3, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 34e3ca06f150b42449f69adc3f0debd5, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 7cf499fa973bdb44d9888ac4060ae004, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 83d0324732f76704d8845de34d381872, type: 2}

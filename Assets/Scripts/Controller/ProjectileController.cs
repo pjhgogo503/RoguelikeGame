@@ -6,10 +6,12 @@ public class ProjectileController : MonoBehaviour
 {
     string parentName;
     GameObject projectile;
+    EffectController particle;
 
     private void Start()
     {
         parentName = gameObject.transform.parent.tag;
+        particle = GameObject.Find("Effect").GetComponent<EffectController>();
     }
 
     public void Shoot()
@@ -17,7 +19,13 @@ public class ProjectileController : MonoBehaviour
         switch (parentName) 
         {
             case "Player":
-                projectile = Managers.Resource.Instantiate($"Creature/Arrow");
+                switch (gameObject.transform.parent.name) 
+                {
+                    case "Skeleton_B":
+                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Arrow"); break;
+                    case "Skeleton_C":
+                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Magic Missile"); break;
+                }
 
                 if (gameObject.transform.parent.transform.localScale.x >= 0)
                 {
@@ -31,7 +39,13 @@ public class ProjectileController : MonoBehaviour
                 }
                 break;
             case "Landing_Long":
-                projectile = Managers.Resource.Instantiate($"Creature/Arrow");
+                switch (gameObject.transform.parent.name)
+                {
+                    case "Skeleton_B":
+                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Arrow"); break;
+                    case "Skeleton_C":
+                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Magic Missile"); break;
+                }
 
                 if (gameObject.transform.parent.transform.localScale.x >= 0)
                 {
