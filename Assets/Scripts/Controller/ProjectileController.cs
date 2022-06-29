@@ -22,9 +22,9 @@ public class ProjectileController : MonoBehaviour
                 switch (gameObject.transform.parent.name) 
                 {
                     case "Skeleton_B":
-                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Arrow"); break;
+                        projectile = Managers.Resource.Instantiate("Creature/Projectile/Arrow"); break;
                     case "Skeleton_C":
-                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Magic Missile"); break;
+                        projectile = Managers.Resource.Instantiate("Creature/Projectile/Magic Missile"); break;
                 }
 
                 if (gameObject.transform.parent.transform.localScale.x >= 0)
@@ -42,9 +42,9 @@ public class ProjectileController : MonoBehaviour
                 switch (gameObject.transform.parent.name)
                 {
                     case "Skeleton_B":
-                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Arrow"); break;
+                        projectile = Managers.Resource.Instantiate("Creature/Projectile/Arrow"); break;
                     case "Skeleton_C":
-                        projectile = Managers.Resource.Instantiate($"Creature/Projectile/Magic Missile"); break;
+                        projectile = Managers.Resource.Instantiate("Creature/Projectile/Magic Missile"); break;
                 }
 
                 if (gameObject.transform.parent.transform.localScale.x >= 0)

@@ -66,7 +66,7 @@ public class MonsterController1 : CreatureController
     {
         frontVec = new Vector2(_rigid.position.x + movementFlag, _rigid.position.y);
         bottomcheck = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Floor"));
-        frontcheck = Physics2D.Raycast(frontVec + new Vector2(0, 1), movementFlag == 1 ? Vector3.right : Vector3.left, 1, LayerMask.GetMask("Floor"));
+        frontcheck = Physics2D.Raycast(frontVec + new Vector2(0, 1), movementFlag == 1 ? Vector3.right :Vector3.left, 0.2f, LayerMask.GetMask("Floor"));
     }
 
     protected override void UpdateIdle()
@@ -74,6 +74,15 @@ public class MonsterController1 : CreatureController
         XYcheck(); // 매 프레임마다 거리 계산
         VectorAndRay();
         anim.SetInteger(animationState, (int)Define.CreatureState.Idle);
+
+        if (stat.Hp <= 0)
+        {
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
+            State = Define.CreatureState.Die;
+            return;
+        }
 
         if (distance <= _scanRange && height < 1) // X 거리가 _scanRange이내이고 높이차이가 1 미만일때
         {
@@ -95,15 +104,6 @@ public class MonsterController1 : CreatureController
             return;
         }
         else { AI = true; if (movementFlag != 0) State = Define.CreatureState.Moving; }
-
-        if (stat.Hp <= 0)
-        {
-            if (action.equipWeapon)
-                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
-            action.PossessionTimerOn(); //타이머 ON
-            State = Define.CreatureState.Die;
-            return;
-        }
     }
 
     protected override void UpdateMoving()
@@ -112,6 +112,16 @@ public class MonsterController1 : CreatureController
         VectorAndRay();
         anim.SetInteger(animationState, (int)Define.CreatureState.Moving);
 
+        if (stat.Hp <= 0)
+        {
+            State = Define.CreatureState.Die;
+            if (AI) AI = false;
+            CancelInvoke();
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
+            return;
+        }
         if (AI)
         {
             if (distance <= _scanRange && height < 1)
@@ -157,34 +167,28 @@ public class MonsterController1 : CreatureController
                 return;
             }
         }
-        if (stat.Hp <= 0)
-        {
-            State = Define.CreatureState.Die;
-            if (AI) AI = false;
-            CancelInvoke();
-            if(action.equipWeapon)
-                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
-            action.PossessionTimerOn(); //타이머 ON
-            return;
-        }
+        
     }
 
     protected override void UpdateAttack()
     {
         XYcheck();
         anim.SetInteger(animationState, (int)Define.CreatureState.Attack);
+
+        if (stat.Hp <= 0)
+        {
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
+            State = Define.CreatureState.Die;
+            return;
+        }
+
         // 공격범위보다 distance가 멀어짐과 동시에 Attack 애니메이션이 1번이상 실행 된 상태
         if (_attackRange < distance && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 &&
             gameObject.GetComponentInChildren<ActionController>().equipWeapon == false)
         {
-            if (stat.Hp <= 0)
-            {
-                if (action.equipWeapon)
-                    action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
-                action.PossessionTimerOn(); //타이머 ON
-                State = Define.CreatureState.Die;
-                return;
-            }
+            
             anim.SetInteger(animationState, (int)Define.CreatureState.Moving);
             State = Define.CreatureState.Moving;
             return;
@@ -221,6 +225,14 @@ public class MonsterController1 : CreatureController
     private void OnTriggerExit2D(Collider2D collision)
     {
         Debug.Log($"Monster hit! : {collision.name}");
+        if (stat.Hp <= 0)
+        {
+            if (action.equipWeapon)
+                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
+            action.PossessionTimerOn(); //타이머 ON
+            State = Define.CreatureState.Die;
+        }
+
         if (State != Define.CreatureState.Die && State == Define.CreatureState.Attack)
         {
             Debug.Log("Monster Attack On");
@@ -229,13 +241,6 @@ public class MonsterController1 : CreatureController
                 if (PlayerStat.Hp > 0)
                     PlayerStat.Hp -= stat.Attack;
             }
-
-        }
-        if(stat.Hp <= 0) {
-            if (action.equipWeapon)
-                action.AttackColliderOnOff(); //혹시라도 켜져있는 콜라이더 OFF
-            action.PossessionTimerOn(); //타이머 ON
-            State = Define.CreatureState.Die;
         }
     }
 }

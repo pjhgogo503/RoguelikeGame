@@ -32,8 +32,6 @@ public class PlayerController : MonoBehaviour
 
     void Init() //플레이어 컴포넌트 연결부분
     {
-        DontDestroyOnLoad(this.gameObject);
-
         boxCol2D = GetComponent<BoxCollider2D>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
@@ -195,6 +193,16 @@ public class PlayerController : MonoBehaviour
             if (transform.position.x >= Camera.main.ScreenToWorldPoint(Input.mousePosition).x) transform.localScale = new Vector3(-1, 1, 1);
             else transform.localScale = new Vector3(1, 1, 1);
         }
+
+        if (PlayerStat.Hp <= 0)
+        {
+            isdie = true;
+            animator.SetBool("isDie", true);
+            Managers.Input.KeyAction -= OnKeyBoard;
+            Managers.Input.NonKeyAction -= NonKeyBoard;
+            Managers.Input.MouseAction -= OnMouseClicked;
+            return;
+        }
     }
 
     //마우스에 (드래그 , 클릭) 들어왔을 때
@@ -221,7 +229,7 @@ public class PlayerController : MonoBehaviour
                     {
                         GameObject go = GameObject.Find("Target");
                         if(go == null)
-                            target = Managers.Resource.Instantiate($"UI/Target");
+                            target = Managers.Resource.Instantiate("UI/Target");
                     }
                     else Managers.Resource.Destroy(GameObject.Find("Target"));
                             

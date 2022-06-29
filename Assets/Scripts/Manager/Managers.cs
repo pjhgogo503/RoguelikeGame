@@ -8,6 +8,7 @@ public class Managers : MonoBehaviour
     static Managers Instance { get { Init(); return s_instance; } } //모든걸 Instance로 통제
 
     InputManager _input = new InputManager();
+    PoolManager _pool = new PoolManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerExtended _scene = new SceneManagerExtended();
     UIManager _ui = new UIManager();
@@ -15,6 +16,7 @@ public class Managers : MonoBehaviour
     TalkManager _talk = new TalkManager();
 
     public static InputManager Input { get { return Instance._input; } }
+    public static PoolManager Pool { get { return Instance._pool; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SceneManagerExtended Scene { get { return Instance._scene; } }
     public static UIManager UI { get { return Instance._ui; } }
@@ -47,6 +49,8 @@ public class Managers : MonoBehaviour
             //삭제 방지
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
+
+            s_instance._pool.init();
         }
     }
 

@@ -58,7 +58,7 @@ public class UI_Information : UI_Scene
         {
             GameObject item = Managers.UI.MakeSubItem<UI_Inven_Item>(parent: itemPanel.transform, "Item").gameObject;
 
-            UI_Inven_Item invenitem = Util.GetAddComponent<UI_Inven_Item>(item);
+            UI_Inven_Item invenitem = item.GetAddComponent<UI_Inven_Item>();
         }
     }
 

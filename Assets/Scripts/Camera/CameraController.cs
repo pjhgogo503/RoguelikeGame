@@ -43,7 +43,11 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(this.gameObject);
+        offset.x = Camera.main.transform.position.x;
+        offset.y = Camera.main.transform.position.y;
+
+        MinX = offset.x - 20.39f; MaxX = offset.x + 20.41f;
+        MinY = offset.y - 12.32f; MaxY = offset.y + 13.68f;
         //카메라 수직축의 반만큼의 길이
         height = Camera.main.orthographicSize;
         //카메라 수평축의 반만큼의 길이
@@ -66,8 +70,8 @@ public class CameraController : MonoBehaviour
         if (cameraMoving)
         {
             Vector3 desiredPosition = new Vector3(
-                Mathf.Clamp(playertransform.position.x + offset.x, MinX + width, MaxX - width),
-                Mathf.Clamp(playertransform.position.y + offset.y, MinY + height, MaxY - height),
+                Mathf.Clamp(playertransform.position.x /*+ offset.x*/, MinX + width, MaxX - width),
+                Mathf.Clamp(playertransform.position.y/* + offset.y*/, MinY + height, MaxY - height),
                 -10);
             transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * cameraspeed);
         }
