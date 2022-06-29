@@ -11,7 +11,7 @@ public class PlayerStat
     public static float _moveSpeed = 5;
     public static int _exp = 0;
     public static int _gold = 0;
-    public static float _jumpPower = 100;
+    public static float _jumpPower = 90;
 
     public static bool _possessionClick = false;
     public static bool _landorfly = false;
